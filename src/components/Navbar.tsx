@@ -22,7 +22,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white shadow-md py-4 sticky top-0 z-50">
+    <nav aria-label="Main navigation" className="bg-white/95 backdrop-blur-xl border-b border-slate-200/70 py-4 sticky top-0 z-40">
       <div className="container-custom">
         <div className="flex items-center justify-between">
           <Logo />
@@ -42,7 +42,7 @@ const Navbar = () => {
                 {item.name}
               </Link>
             ))}
-            <Button className="bg-tech-blue hover:bg-tech-darkBlue text-white">
+            <Button asChild className="bg-tech-blue hover:bg-tech-darkBlue text-white">
               <Link to="/contact">Get Support</Link>
             </Button>
           </div>
@@ -51,6 +51,8 @@ const Navbar = () => {
           <div className="flex md:hidden">
             <button
               type="button"
+              aria-label={isOpen ? "Close navigation" : "Open navigation"}
+              aria-expanded={isOpen}
               className="text-gray-500 hover:text-tech-blue"
               onClick={() => setIsOpen(!isOpen)}
             >
@@ -78,6 +80,7 @@ const Navbar = () => {
                 </Link>
               ))}
               <Button
+                asChild
                 className="bg-tech-blue hover:bg-tech-darkBlue text-white w-full mt-2"
                 onClick={() => setIsOpen(false)}
               >

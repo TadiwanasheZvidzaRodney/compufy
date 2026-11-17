@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 import { Phone, Mail, MapPin, MessageCircle } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Contact = () => {
   const location = useLocation();
@@ -20,7 +21,7 @@ const Contact = () => {
     email: "",
     phone: "",
     service: serviceParam || "",
-    message: ""
+    message: searchParams.get("name") ? `I'd like a quote for ${searchParams.get("name")}.` : ""
   });
   
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -34,17 +35,23 @@ const Contact = () => {
     setFormData(prev => ({ ...prev, service: value }));
   };
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const [website, setWebsite] = useState("");
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting || website) return;
     setIsSubmitting(true);
-    
-    // Simulate form submission
-    setTimeout(() => {
+    try {
+      const productId = searchParams.get("product");
+      const { error } = await supabase.from("inquiries").insert({
+        name: formData.name.trim(), email: formData.email.trim(), phone: formData.phone.trim(),
+        service: formData.service, message: formData.message.trim(),
+        product_id: productId && /^[0-9a-f-]{36}$/i.test(productId) ? productId : null,
+      });
+      if (error) throw error;
       toast({
         title: "Message Sent!",
         description: "We've received your inquiry and will get back to you soon.",
       });
-      setIsSubmitting(false);
       setFormData({
         name: "",
         email: "",
@@ -52,7 +59,11 @@ const Contact = () => {
         service: "",
         message: ""
       });
-    }, 1500);
+    } catch {
+      toast({ title: "Message couldn't be sent", description: "Please try again, or contact us directly by phone, email or WhatsApp.", variant: "destructive" });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -61,10 +72,11 @@ const Contact = () => {
       
       <main className="flex-grow">
         {/* Contact Hero */}
-        <section className="bg-gradient-to-b from-blue-50 to-white py-16">
+        <section className="page-intro">
           <div className="container-custom">
             <div className="max-w-3xl mx-auto text-center">
-              <h1 className="heading-1 text-tech-darkBlue mb-4">Contact Us</h1>
+              <p className="eyebrow mb-5">LET'S TALK TECHNOLOGY</p>
+              <h1 className="heading-1 text-tech-darkBlue mb-4">Good things start<br />with a conversation.</h1>
               <p className="text-lg text-gray-700">
                 Have questions or need assistance? Our team is here to help you with all your IT needs.
               </p>
@@ -81,7 +93,7 @@ const Contact = () => {
                   <Phone className="text-tech-blue" size={24} />
                 </div>
                 <h3 className="text-xl font-bold mb-2">Phone</h3>
-                <p className="text-gray-600 mb-2">Mon-Fri: 8am - 6pm</p>
+                <p className="text-gray-600 mb-2">Mon–Fri: 9am–5pm</p>
                 <a href="tel:+263772752393" className="text-tech-blue font-medium">+263772752393 / +263712125999</a>
               </div>
               
@@ -90,7 +102,7 @@ const Contact = () => {
                   <Mail className="text-tech-blue" size={24} />
                 </div>
                 <h3 className="text-xl font-bold mb-2">Email</h3>
-                <p className="text-gray-600 mb-2">24/7 Support</p>
+                <p className="text-gray-600 mb-2">Send your questions anytime</p>
                 <a href="mailto:compufyinvestments@gmail.com" className="text-tech-blue font-medium">compufyinvestments@gmail.com</a>
               </div>
               
@@ -117,6 +129,7 @@ const Contact = () => {
               <div>
                 <h2 className="heading-2 text-tech-darkBlue mb-6">Send Us a Message</h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="hidden" aria-hidden="true"><label>Website<input name="website" tabIndex={-1} autoComplete="off" value={website} onChange={e => setWebsite(e.target.value)} /></label></div>
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
                       Full Name
@@ -127,6 +140,7 @@ const Contact = () => {
                       value={formData.name}
                       onChange={handleChange}
                       required
+                      maxLength={150}
                       placeholder="Enter your full name"
                     />
                   </div>
@@ -143,6 +157,7 @@ const Contact = () => {
                         value={formData.email}
                         onChange={handleChange}
                         required
+                        maxLength={254}
                         placeholder="Enter your email"
                       />
                     </div>
@@ -154,6 +169,8 @@ const Contact = () => {
                       <Input
                         id="phone"
                         name="phone"
+                        type="tel"
+                        maxLength={50}
                         value={formData.phone}
                         onChange={handleChange}
                         placeholder="Enter your phone number"
@@ -193,6 +210,7 @@ const Contact = () => {
                       value={formData.message}
                       onChange={handleChange}
                       required
+                      maxLength={5000}
                       placeholder="How can we help you?"
                       className="resize-none"
                     />
@@ -205,12 +223,13 @@ const Contact = () => {
                   >
                     {isSubmitting ? "Sending..." : "Send Message"}
                   </Button>
+                  <p className="text-xs text-muted-foreground leading-relaxed">We use your contact details to respond to this request. Please don’t include passwords, payment information or other sensitive data.</p>
                 </form>
               </div>
               
               {/* Map */}
               <div>
-                <h2 className="heading-2 text-tech-darkBlue mb-6">Our Location</h2>
+                <h2 className="heading-2 text-tech-darkBlue mb-6">Expert support. Wherever you are.</h2>
                 <div className="h-96 bg-gray-200 rounded-lg overflow-hidden">
                   {/* In a real implementation, replace this with an actual map */}
                   <div className="w-full h-full flex items-center justify-center bg-gray-100">

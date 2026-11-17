@@ -1,74 +1,90 @@
-# Welcome to your Lovable project
+# Compufy Investments
 
-## Project info
+Responsive IT services website and product catalogue, with a protected staff workspace.
+Built with React, TypeScript, Vite, Tailwind, shadcn/ui and Supabase.
 
-**URL**: https://lovable.dev/projects/0a77f727-3fed-4df3-930c-095ffd7c9123
+## Local development
 
-## How can I edit this code?
-
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/0a77f727-3fed-4df3-930c-095ffd7c9123) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+Requires Node.js 20+ and npm.
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+npm ci
+cp .env.example .env
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` to your Supabase project.
+Use only the public publishable key in the frontend. Never use a service-role or secret key.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```sh
+npm run typecheck
+npm test
+npm run lint
+npm run build
+npm run preview
+```
 
-**Use GitHub Codespaces**
+## Backend setup (required)
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+The frontend does not automatically modify a hosted database.
 
-## What technologies are used for this project?
+For the existing project, apply `supabase/migrations/20261117090000_compufy_catalogue.sql`
+through your Supabase SQL editor or linked Supabase CLI (`supabase db push`).
+For a new project, apply all migrations in timestamp order.
+The catalogue migration is additive: historical school tables and records are preserved,
+but the old school screens are no longer part of the application.
 
-This project is built with:
+This creates:
+- `categories`: managed categories.
+- `products`: prices in USD, SKU, specifications, image, stock status, draft/published and featured flags.
+- `inquiries`: private customer requests with workflow status.
+- `product-images`: public image bucket, administrator-only uploads, max 5 MB (JPEG/PNG/WebP).
+- Row-level security: public visitors see only published products; only administrators can manage business data.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+No products are seeded or invented. Until setup is complete, the website displays an honest
+unavailable state with direct contact options. Failed inquiry submissions are not reported as sent.
+There is no browser-only data fallback.
 
-## How can I deploy this project?
+`npm test` runs all migrations in an isolated in-memory PostgreSQL instance (PGlite) and
+checks anonymous, non-admin and administrator access, draft visibility, inquiry submission,
+status injection prevention, product CRUD, history preservation and validation constraints.
+It does not access or change your hosted Supabase project.
 
-Simply open [Lovable](https://lovable.dev/projects/0a77f727-3fed-4df3-930c-095ffd7c9123) and click on Share -> Publish.
+### Create an administrator
 
-## Can I connect a custom domain to my Lovable project?
+1. Create a user in **Supabase Dashboard → Authentication → Users**.
+2. Use their UUID in the SQL editor:
 
-Yes, you can!
+```sql
+insert into public.user_roles(user_id, role)
+values ('REPLACE_WITH_USER_UUID', 'admin')
+on conflict (user_id, role) do nothing;
+```
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+3. Sign in at `/admin/login`. There is intentionally no public staff registration.
+   The site owner can send password resets from Supabase.
+4. At `/admin/products`, add categories and products, upload images, and enable **Published**.
+   Featured products appear on the home page.
+5. Customer requests appear at `/admin/inquiries`. Reply by email and track status.
+   Requests are stored, not automatically emailed; no email provider is configured.
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
-# compufy
+## Deployment
+
+Deploy `dist/` to a static host with HTTPS. Set the public environment variables before building.
+Configure SPA rewrites (`/*` → `/index.html`) so direct product/admin links work.
+`public/_redirects` supplies this rule for Netlify-compatible hosts.
+Configure your production URL in Supabase Authentication URL settings.
+
+Before public launch:
+- Add real product content and confirm business contact details/hours.
+- Verify anonymous, authenticated non-admin and admin RLS access against the deployed project.
+- Add server-side rate limiting and CAPTCHA verification to public inquiry submissions;
+  the client honeypot is not a substitute for server-side abuse prevention.
+- Set up backups, privacy/retention requirements and optional email notifications.
+- Replace the SVG social-card placeholder with a hosted PNG/JPEG and use its absolute HTTPS URL
+  in `index.html` for reliable social previews.
+
+## Routes
+
+`/`, `/services`, `/products`, `/products/:slug`, `/about`, `/contact`,
+`/admin/login`, `/admin`, `/admin/products`, `/admin/inquiries`.

@@ -19,7 +19,7 @@ const Services = () => {
         "Performance optimization",
         "Component upgrades"
       ],
-      image: "/lovable-uploads/ca0fca17-1fb7-4741-82ef-57ca2211043f.png"
+      image: "/images/services/ca0fca17-1fb7-4741-82ef-57ca2211043f.png"
     },
     {
       id: "network",
@@ -34,7 +34,7 @@ const Services = () => {
         "VPN setup and configuration",
         "Network troubleshooting and optimization"
       ],
-      image: "/lovable-uploads/505d9921-3622-46ea-afa5-f49988754cb1.png"
+      image: "/images/services/505d9921-3622-46ea-afa5-f49988754cb1.png"
     },
     {
       id: "cctv",
@@ -49,7 +49,7 @@ const Services = () => {
         "Night vision camera installation",
         "Maintenance and support services"
       ],
-      image: "/lovable-uploads/d5ca222b-3fc2-4ac5-b12d-437096b9d2c9.png"
+      image: "/images/services/d5ca222b-3fc2-4ac5-b12d-437096b9d2c9.png"
     },
     {
       id: "web",
@@ -64,7 +64,7 @@ const Services = () => {
         "SEO-friendly website structure",
         "Website maintenance and support"
       ],
-      image: "/lovable-uploads/df1d50f4-cbe9-4cd9-8b4b-82aa0c6381ea.png"
+      image: "/images/services/df1d50f4-cbe9-4cd9-8b4b-82aa0c6381ea.png"
     },
     {
       id: "remote",
@@ -104,14 +104,15 @@ const Services = () => {
       
       <main className="flex-grow">
         {/* Services Hero */}
-        <section className="bg-gradient-to-b from-blue-50 to-white py-16">
+        <section className="page-intro">
           <div className="container-custom">
             <div className="max-w-3xl mx-auto text-center">
-              <h1 className="heading-1 text-tech-darkBlue mb-4">Our IT Services</h1>
+              <p className="eyebrow mb-5">EXPERTISE YOU CAN RELY ON</p>
+              <h1 className="display-title text-tech-darkBlue mb-6">Less downtime.<br /><span className="text-primary">More possibility.</span></h1>
               <p className="text-lg text-gray-700 mb-8">
                 From hardware repairs to network solutions and digital security, we offer comprehensive IT services to keep your technology running smoothly.
               </p>
-              <Button size="lg" className="bg-tech-blue hover:bg-tech-darkBlue text-white">
+              <Button asChild size="lg" className="bg-tech-blue hover:bg-tech-darkBlue text-white">
                 <Link to="/contact">Request a Service</Link>
               </Button>
             </div>
@@ -123,41 +124,42 @@ const Services = () => {
           <section 
             key={service.id} 
             id={service.id}
-            className={`py-16 ${index % 2 === 1 ? 'bg-gray-50' : 'bg-white'}`}
+            className={`py-16 lg:py-24 border-b border-slate-100 ${index % 2 === 1 ? 'bg-slate-50' : 'bg-white'}`}
           >
             <div className="container-custom">
               <div className={`grid grid-cols-1 lg:grid-cols-2 gap-12 items-center ${index % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}>
                 <div className={index % 2 === 1 ? 'order-1 lg:order-2' : 'order-1'}>
                   <div className="flex items-center mb-4">
-                    <div className="w-10 h-10 rounded-full bg-tech-blue flex items-center justify-center mr-3 flex-shrink-0">
-                      <service.icon className="text-white" size={20} />
+                    <div className="service-icon mr-4">
+                      <service.icon size={25} strokeWidth={1.5} />
                     </div>
-                    <h2 className="heading-2 text-tech-darkBlue">{service.title}</h2>
+                    <h2 className="text-3xl font-semibold tracking-tight text-tech-darkBlue">{service.title}</h2>
                   </div>
-                  <p className="text-gray-700 mb-6">
+                  <p className="text-muted-foreground leading-relaxed mb-6">
                     {service.description}
                   </p>
-                  <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 mb-6">
+                  <div className="bg-white rounded-2xl border border-slate-200 p-6 mb-6">
                     <h3 className="text-lg font-semibold mb-4">What We Offer</h3>
                     <ul className="space-y-3">
                       {service.features.map((feature, i) => (
                         <li key={i} className="flex items-start">
                           <span className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-tech-blue/10 text-tech-blue mr-3 flex-shrink-0">✓</span>
-                          <span>{feature}</span>
+                          <span className="text-sm text-slate-600">{feature}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
-                  <Button className="bg-tech-blue hover:bg-tech-darkBlue text-white">
+                  <Button asChild className="bg-tech-blue hover:bg-tech-darkBlue text-white">
                     <Link to={`/contact?service=${service.id}`}>Inquire About This Service</Link>
                   </Button>
                 </div>
                 <div className={index % 2 === 1 ? 'order-2 lg:order-1' : 'order-2'}>
-                  <div className="rounded-lg overflow-hidden shadow-lg">
+                  <div className="rounded-3xl overflow-hidden bg-slate-100">
                     <img 
                       src={service.image} 
                       alt={service.title} 
-                      className="w-full h-64 md:h-80 object-cover"
+                      loading="lazy"
+                      className="w-full h-72 md:h-[420px] object-cover"
                     />
                   </div>
                 </div>
@@ -167,7 +169,7 @@ const Services = () => {
         ))}
         
         {/* CTA Section */}
-        <section className="py-16 bg-tech-blue text-white">
+        <section className="py-16 bg-[#0b132b] text-white">
           <div className="container-custom">
             <div className="max-w-3xl mx-auto text-center">
               <h2 className="heading-2 mb-6">Need a customized IT solution?</h2>
@@ -176,10 +178,10 @@ const Services = () => {
                 consultation and let's create a tailored IT strategy for your organization.
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
-                <Button size="lg" className="bg-white text-tech-blue hover:bg-gray-100">
+                <Button asChild size="lg" className="bg-white text-tech-blue hover:bg-gray-100">
                   <Link to="/contact">Contact Our Team</Link>
                 </Button>
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+                <Button asChild size="lg" variant="outline" className="bg-transparent border-white/30 text-white hover:bg-white/10 hover:text-white">
                   <Link to="/about">Learn About Our Process</Link>
                 </Button>
               </div>

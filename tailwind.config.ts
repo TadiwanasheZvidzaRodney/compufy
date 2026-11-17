@@ -1,5 +1,6 @@
 
 import type { Config } from "tailwindcss";
+import animate from "tailwindcss-animate";
 
 export default {
 	darkMode: ["class"],
@@ -55,9 +56,9 @@ export default {
 				},
 				// Custom colors
 				tech: {
-					blue: "#0054A6",
-					lightBlue: "#0078D7",
-					darkBlue: "#003366",
+					blue: "#2563EB",
+					lightBlue: "#06B6D4",
+					darkBlue: "#0B132B",
 					gray: "#505050",
 					lightGray: "#E0E0E0"
 				}
@@ -91,5 +92,5 @@ export default {
 			}
 		}
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [animate],
 } satisfies Config;

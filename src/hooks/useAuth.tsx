@@ -36,33 +36,37 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, newSession) => {
+    let active = true;
+    let revision = 0;
+    const load = async (newSession: Session | null) => {
+      const current = ++revision;
       setSession(newSession);
       setUser(newSession?.user ?? null);
+      setRoles([]);
+      setLoading(true);
       if (newSession?.user) {
-        setTimeout(() => {
-          fetchRoles(newSession.user.id);
-        }, 0);
-      } else {
-        setRoles([]);
+        const { data, error } = await supabase.from("user_roles").select("role").eq("user_id", newSession.user.id);
+        if (active && current === revision) {
+          setRoles(error ? [] : (data ?? []).map(r => r.role as AppRole));
+        }
       }
+      if (active && current === revision) setLoading(false);
+    };
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      // Schedule outside the auth callback to avoid waiting on Supabase's auth lock.
+      queueMicrotask(() => { if (active) void load(newSession); });
     });
 
     supabase.auth.getSession().then(({ data: { session: existing } }) => {
-      setSession(existing);
-      setUser(existing?.user ?? null);
-      if (existing?.user) {
-        fetchRoles(existing.user.id).finally(() => setLoading(false));
-      } else {
-        setLoading(false);
-      }
+      if (active && revision === 0) void load(existing);
     });
 
-    return () => sub.subscription.unsubscribe();
+    return () => { active = false; sub.subscription.unsubscribe(); };
   }, []);
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
   };
 
   const hasRole = (role: AppRole) => roles.includes(role);

@@ -1,56 +1,23 @@
-
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { ArrowUpRight } from "lucide-react";
+import { Product, formatPrice, safeImage, stockLabels } from "@/lib/catalogue";
 
-interface ProductCardProps {
-  title: string;
-  description: string;
-  price: string;
-  image: string;
-  category: string;
-  inStock?: boolean;
-  id: string;
-}
-
-const ProductCard = ({ title, description, price, image, category, inStock = true, id }: ProductCardProps) => {
-  return (
-    <Card className="overflow-hidden h-full flex flex-col">
-      <div className="relative h-48 overflow-hidden">
-        <img 
-          src={image} 
-          alt={title} 
-          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105" 
-        />
-        {category && (
-          <Badge className="absolute top-2 right-2 bg-tech-blue">{category}</Badge>
-        )}
+export default function ProductCard({ product, category }: { product: Product; category?: string }) {
+  return <Link to={`/products/${product.slug}`} className="product-card group">
+    <div className="aspect-[4/3] overflow-hidden bg-slate-100 relative">
+      <img src={safeImage(product.image_url)} alt={product.title} loading="lazy"
+        onError={e => { e.currentTarget.onerror = null; e.currentTarget.src = "/placeholder.svg"; }}
+        className="h-full w-full object-contain p-6 transition duration-500 group-hover:scale-105" />
+      {product.featured && <span className="absolute left-4 top-4 rounded-full bg-white px-3 py-1 text-xs font-semibold">Featured</span>}
+    </div>
+    <div className="p-5">
+      <div className="eyebrow mb-3">{category || "Technology"}</div>
+      <h3 className="text-lg font-semibold tracking-tight group-hover:text-primary">{product.title}</h3>
+      <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{product.description}</p>
+      <div className="mt-5 flex items-center justify-between border-t pt-4">
+        <div><p className="font-semibold">{formatPrice(product.price)}</p><p className={`text-xs mt-1 ${product.stock_status === "out_of_stock" ? "text-slate-500" : "text-emerald-700"}`}>{stockLabels[product.stock_status]}</p></div>
+        <span className="rounded-full bg-slate-100 p-2 group-hover:bg-primary group-hover:text-white transition"><ArrowUpRight size={18} /></span>
       </div>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-semibold line-clamp-1">{title}</CardTitle>
-        <CardDescription className="text-tech-blue font-medium">{price}</CardDescription>
-      </CardHeader>
-      <CardContent className="flex-grow">
-        <p className="text-sm text-gray-600 line-clamp-3">{description}</p>
-      </CardContent>
-      <CardFooter className="pt-2 border-t">
-        <div className="flex justify-between items-center w-full">
-          <span className={`text-sm ${inStock ? 'text-green-600' : 'text-red-500'}`}>
-            {inStock ? 'In Stock' : 'Out of Stock'}
-          </span>
-          <Button 
-            variant={inStock ? 'default' : 'outline'} 
-            disabled={!inStock}
-            className={inStock ? 'bg-tech-blue hover:bg-tech-darkBlue' : ''}
-            asChild
-          >
-            <Link to={`/products/${id}`}>View Details</Link>
-          </Button>
-        </div>
-      </CardFooter>
-    </Card>
-  );
-};
-
-export default ProductCard;
+    </div>
+  </Link>;
+}

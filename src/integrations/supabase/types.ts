@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      categories: {
+        Row: { id: string; name: string }
+        Insert: { id?: string; name: string }
+        Update: { id?: string; name?: string }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          id: string; title: string; slug: string; sku: string | null; description: string
+          category_id: string | null; price: number | null; currency: string; image_url: string
+          specifications: Json; stock_status: "in_stock" | "low_stock" | "out_of_stock"
+          published: boolean; featured: boolean; created_at: string; updated_at: string
+        }
+        Insert: {
+          id?: string; title: string; slug: string; sku?: string | null; description?: string
+          category_id?: string | null; price?: number | null; currency?: string; image_url?: string
+          specifications?: Json; stock_status?: "in_stock" | "low_stock" | "out_of_stock"
+          published?: boolean; featured?: boolean; created_at?: string; updated_at?: string
+        }
+        Update: {
+          title?: string; slug?: string; sku?: string | null; description?: string
+          category_id?: string | null; price?: number | null; image_url?: string
+          specifications?: Json; stock_status?: "in_stock" | "low_stock" | "out_of_stock"
+          published?: boolean; featured?: boolean
+        }
+        Relationships: [{ foreignKeyName: "products_category_id_fkey"; columns: ["category_id"]; isOneToOne: false; referencedRelation: "categories"; referencedColumns: ["id"] }]
+      }
+      inquiries: {
+        Row: {
+          id: string; name: string; email: string; phone: string; service: string; product_id: string | null
+          message: string; status: "new" | "in_progress" | "quoted" | "resolved"; created_at: string
+        }
+        Insert: { name: string; email: string; phone?: string; service?: string; product_id?: string | null; message: string }
+        Update: { status?: "new" | "in_progress" | "quoted" | "resolved" }
+        Relationships: []
+      }
       announcements: {
         Row: {
           author_id: string | null

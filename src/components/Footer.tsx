@@ -1,106 +1,13 @@
+import { Link } from "react-router-dom";
+import { ArrowUpRight, Command, Phone, Mail } from "lucide-react";
 
-import { Link } from 'react-router-dom';
-import { Phone, Mail, MapPin, Facebook, Twitter, Linkedin, Instagram } from 'lucide-react';
-
-const Footer = () => {
-  return (
-    <footer className="bg-gray-900 text-white pt-12 pb-8">
-      <div className="container-custom">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Company Info */}
-          <div>
-            <h3 className="text-xl font-bold mb-4">Compufy Investments</h3>
-            <p className="text-gray-300 mb-4">Your reliable partner for all IT support needs. We provide comprehensive solutions for businesses and individuals.</p>
-            <div className="flex space-x-4">
-              <a href="#" className="text-gray-300 hover:text-white transition-colors">
-                <Facebook size={20} />
-              </a>
-              <a href="#" className="text-gray-300 hover:text-white transition-colors">
-                <Twitter size={20} />
-              </a>
-              <a href="#" className="text-gray-300 hover:text-white transition-colors">
-                <Linkedin size={20} />
-              </a>
-              <a href="#" className="text-gray-300 hover:text-white transition-colors">
-                <Instagram size={20} />
-              </a>
-            </div>
-          </div>
-          
-          {/* Services */}
-          <div>
-            <h3 className="text-xl font-bold mb-4">Services</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/services#repair" className="text-gray-300 hover:text-white transition-colors">Computer Repair</Link>
-              </li>
-              <li>
-                <Link to="/services#network" className="text-gray-300 hover:text-white transition-colors">Network Installation</Link>
-              </li>
-              <li>
-                <Link to="/services#cctv" className="text-gray-300 hover:text-white transition-colors">CCTV Installation</Link>
-              </li>
-              <li>
-                <Link to="/services#web" className="text-gray-300 hover:text-white transition-colors">Website Development</Link>
-              </li>
-              <li>
-                <Link to="/services#remote" className="text-gray-300 hover:text-white transition-colors">Remote Assistance</Link>
-              </li>
-              <li>
-                <Link to="/services#training" className="text-gray-300 hover:text-white transition-colors">Training and Consultancy</Link>
-              </li>
-            </ul>
-          </div>
-          
-          {/* Quick Links */}
-          <div>
-            <h3 className="text-xl font-bold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/about" className="text-gray-300 hover:text-white transition-colors">About Us</Link>
-              </li>
-              <li>
-                <Link to="/products" className="text-gray-300 hover:text-white transition-colors">Products</Link>
-              </li>
-              <li>
-                <Link to="/contact" className="text-gray-300 hover:text-white transition-colors">Contact Us</Link>
-              </li>
-            </ul>
-          </div>
-          
-          {/* Contact Info */}
-          <div>
-            <h3 className="text-xl font-bold mb-4">Contact Us</h3>
-            <ul className="space-y-3">
-              <li className="flex items-start">
-                <Phone size={20} className="mr-3 flex-shrink-0 mt-1" />
-                <span>+263772752393 / +263712125999</span>
-              </li>
-              <li className="flex items-start">
-                <Mail size={20} className="mr-3 flex-shrink-0 mt-1" />
-                <span>compufyinvestments@gmail.com</span>
-              </li>
-              <li className="flex items-start">
-                <MapPin size={20} className="mr-3 flex-shrink-0 mt-1" />
-                <span>We offer call-out services at a standard fare</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-        
-        {/* Copyright */}
-        <div className="border-t border-gray-800 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-400 text-sm">© 2023 Compufy Investments. All rights reserved.</p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link to="/privacy-policy" className="text-gray-400 hover:text-white text-sm transition-colors">Privacy Policy</Link>
-            <Link to="/terms-of-service" className="text-gray-400 hover:text-white text-sm transition-colors">Terms of Service</Link>
-            <Link to="/admin/login" className="text-gray-400 hover:text-white text-sm transition-colors">Staff Login</Link>
-          </div>
-
-        </div>
-      </div>
-    </footer>
-  );
-};
-
-export default Footer;
+export default function Footer() {
+  return <footer className="bg-[#0b132b] text-white pt-16 pb-7"><div className="container-custom">
+    <div className="grid md:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1.5fr] gap-10 pb-14">
+      <div><Link to="/" className="inline-flex gap-3 items-center text-2xl font-bold tracking-tight"><Command className="text-cyan-300" />compufy.</Link><p className="text-slate-400 mt-5 max-w-xs leading-relaxed text-sm">Better technology. Less complexity. Your partner in IT support, hardware and digital solutions.</p><a href="https://wa.me/263772752393" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-cyan-300 text-sm mt-6">Let's talk on WhatsApp <ArrowUpRight size={16} /></a></div>
+      <div><h3 className="text-sm font-semibold mb-5">Explore</h3><ul className="space-y-3 text-sm text-slate-400">{[["Home","/"],["Catalogue","/products"],["Our story","/about"],["Contact","/contact"]].map(([text,to]) => <li key={to}><Link className="hover:text-white" to={to}>{text}</Link></li>)}</ul></div>
+      <div><h3 className="text-sm font-semibold mb-5">Expertise</h3><ul className="space-y-3 text-sm text-slate-400">{[["IT repairs","repair"],["Networking","network"],["CCTV & security","cctv"],["Web development","web"],["Training & consulting","training"]].map(([text,id]) => <li key={id}><Link className="hover:text-white" to={`/services#${id}`}>{text}</Link></li>)}</ul></div>
+      <div><h3 className="text-sm font-semibold mb-5">Get in touch</h3><a href="tel:+263772752393" className="flex items-center gap-2 text-sm text-slate-300"><Phone size={15} /> +263 772 752 393</a><a href="tel:+263712125999" className="block text-sm text-slate-400 mt-3 ml-6">+263 712 125 999</a><a href="mailto:compufyinvestments@gmail.com" className="flex items-center gap-2 text-sm text-slate-300 mt-4 break-all"><Mail size={15} className="shrink-0" /> compufyinvestments@gmail.com</a><p className="text-xs text-slate-400 leading-relaxed mt-5">Monday–Friday · 9am–5pm<br />Call-out services available.</p></div>
+    </div><div className="border-t border-white/10 pt-6 flex flex-wrap justify-between gap-4 text-xs text-slate-400"><p>© {new Date().getFullYear()} Compufy Investments. All rights reserved.</p><Link to="/admin/login" className="hover:text-white">Staff portal ↗</Link></div>
+  </div></footer>;
+}
